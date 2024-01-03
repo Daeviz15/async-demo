@@ -1,32 +1,28 @@
-const mytodo = (callback) =>{
+const mytodo = (callback) => {
   const request = new XMLHttpRequest();
 
-  request.addEventListener('readystatechange', () =>{
-  if(request.readyState === 4 && request.status === 200){
-    const data = JSON.parse(request.response)
-    callback(undefined, data)
+  request.addEventListener("readystatechange", () => {
+    if (request.readyState === 4 && request.status === 200) {
+      const data = JSON.parse(request.response);
+      callback(undefined, data);
+    } else if (request.readyState === 4) {
+      callback("could not fetch data", undefined);
+    }
+  });
+
+  request.open("GET", "other.json");
+  request.send();
+};
+
+mytodo((err, data) => {
+  console.log("callback fired");
+
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(data);
   }
-  else if(request.readyState === 4){
-    callback('could not fetch data', undefined)
-  }
-  })
-  
-  request.open('GET', 'other.json')
-  request.send()
-  
-}
-
-mytodo((err, data)=>{
-console.log('callback fired');
-
-if(err){
-  console.log(err)
-}
-else{
-  console.log(data)
-}
-
-})
+});
 
 const mytods = (resource, callback) => {
   const request = new XMLHttpRequest();
@@ -54,11 +50,9 @@ mytods("other.json", (err, data) => {
   });
 });
 
-
 //promise
- const mytodos = (resource) => {
-return new Promise((resolve, reject) => {
-    
+const mytodos = (resource) => {
+  return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
 
     request.addEventListener("readystatechange", () => {
@@ -72,36 +66,33 @@ return new Promise((resolve, reject) => {
 
     request.open("GET", resource);
     request.send();
-});
+  });
 };
 
-mytodos("other.json").then(data =>
-console.log(data)).catch(
-  err => console.log(err)
-)
-
+mytodos("other.json")
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err));
 
 //fetch api
 fetch("other.json")
   .then((response) => {
     console.log(response);
 
-  return response.json().then(data =>{
-    console.log(data);
-  })
+    return response.json().then((data) => {
+      console.log(data);
+    });
   })
   .catch((err) => {
     console.log(err);
   });
 
-
 //Async and await
 const todosec = async () => {
   const response = await fetch("other.jso0n");
 
-if(response.status !== 200){
-  throw new Error('could not fetch data')
-}
+  if (response.status !== 200) {
+    throw new Error("could not fetch data");
+  }
 
   const data = await response.json();
   return data;
@@ -109,4 +100,4 @@ if(response.status !== 200){
 
 todosec()
   .then((data) => console.log(data))
-  .catch((err) => console.log('no data resource found,', err.message));
+  .catch((err) => console.log("no data resource found,", err.message));
